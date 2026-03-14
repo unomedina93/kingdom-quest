@@ -1,0 +1,56 @@
+{
+  "name": "kingdom-quest",
+  "version": "1.0.0",
+  "description": "Kingdom Quest - Learn & Adventure!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "generate-icon": "node scripts/generate-icon.js",
+    "build": "npm run generate-icon && electron-builder",
+    "build:mac": "npm run generate-icon && electron-builder --mac",
+    "build:win": "npm run generate-icon && electron-builder --win",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0",
+    "sharp": "^0.33.5"
+  },
+  "build": {
+    "appId": "com.unomedina93.kingdom-quest",
+    "productName": "Kingdom Quest",
+    "icon": "build/icon",
+    "files": [
+      "main.js",
+      "preload.js",
+      "version.json",
+      "game/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.games",
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] }
+      ]
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+    "dmg": {
+      "title": "Kingdom Quest",
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    }
+  }
+}

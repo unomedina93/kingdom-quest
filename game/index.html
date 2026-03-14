@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kingdom Quest - Learn & Adventure!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ========== TITLE SCREEN ========== -->
+    <div id="screen-title" class="screen active">
+      <div class="title-bg">
+        <div class="stars-layer"></div>
+        <div class="castle-silhouette">🏰</div>
+        <div class="title-content">
+          <div class="title-logo">
+            <span class="title-sword">⚔️</span>
+            <h1 class="title-text">Kingdom<br><span class="title-quest">Quest</span></h1>
+            <span class="title-shield">🛡️</span>
+          </div>
+          <p class="title-sub">Learn • Explore • Grow!</p>
+          <p class="title-verse">"Be strong and courageous!" — Joshua 1:9</p>
+          <button class="btn-main btn-glow" onclick="App.showScreen('hero-select')">⚔️ Begin Quest!</button>
+          <button class="btn-settings-small" onclick="App.showScreen('settings')">⚙️ Settings</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== HERO SELECT SCREEN ========== -->
+    <div id="screen-hero-select" class="screen">
+      <div class="parchment-page">
+        <h2 class="screen-title">Begin Your Journey!</h2>
+
+        <!-- Step 1: Name -->
+        <div class="setup-step" id="setup-name">
+          <p class="setup-label">What is your name, young hero?</p>
+          <input type="text" id="hero-name-input" class="name-input"
+            placeholder="Type your name here..."
+            maxlength="20"
+            oninput="App.previewName(this.value)">
+          <p class="name-preview" id="name-preview">Hero</p>
+          <button class="btn-main" onclick="App.confirmName()">That's me! ➡️</button>
+        </div>
+
+        <!-- Step 2: Hero choice -->
+        <div class="setup-step hidden" id="setup-hero">
+          <p class="setup-label">Choose your hero, <span id="name-in-hero" class="name-highlight"></span>!</p>
+          <div class="hero-grid">
+            <div class="hero-card" onclick="App.selectHero('leo')">
+              <div class="hero-avatar">🧙‍♂️</div>
+              <div class="hero-name">The Knight<br><small>Brave & Strong</small></div>
+            </div>
+            <div class="hero-card" onclick="App.selectHero('ria')">
+              <div class="hero-avatar">🧝‍♀️</div>
+              <div class="hero-name">The Warrior<br><small>Swift & Wise</small></div>
+            </div>
+            <div class="hero-card" onclick="App.selectHero('sage')">
+              <div class="hero-avatar">🧙‍♂️</div>
+              <div class="hero-name">The Wizard<br><small>Kind & Magical</small></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Sidekick choice -->
+        <div class="setup-step hidden" id="setup-sidekick">
+          <p class="setup-label">Choose your faithful sidekick!</p>
+          <div class="hero-grid">
+            <div class="hero-card" onclick="App.selectSidekick('dog', '🐕')">
+              <div class="hero-avatar">🐕</div>
+              <div class="hero-name">Buddy<br><small>the Loyal Dog</small></div>
+            </div>
+            <div class="hero-card" onclick="App.selectSidekick('lion', '🦁')">
+              <div class="hero-avatar">🦁</div>
+              <div class="hero-name">Brave<br><small>the Lion Cub</small></div>
+            </div>
+            <div class="hero-card" onclick="App.selectSidekick('owl', '🦉')">
+              <div class="hero-avatar">🦉</div>
+              <div class="hero-name">Wisdom<br><small>the Wise Owl</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== WORLD MAP ========== -->
+    <div id="screen-map" class="screen">
+      <div class="map-bg">
+        <div class="map-header">
+          <span class="map-hero-icon" id="map-hero-icon">🧙‍♂️</span>
+          <span class="map-title">Kingdom of Learning</span>
+          <span class="map-stars">⭐ <span id="map-star-count">0</span></span>
+        </div>
+        <!-- Campaign Mode Button -->
+        <button class="btn-campaign" onclick="Campaign.start()">
+          ⚔️ Begin the Quest! <span class="campaign-sub">(Story Adventure)</span>
+        </button>
+        <div class="map-grid">
+          <div class="map-zone zone-maze" onclick="App.startGame('maze')">
+            <div class="zone-icon">🌲</div>
+            <div class="zone-name">Forest<br>Maze</div>
+            <div class="zone-badge" id="badge-maze"></div>
+          </div>
+          <div class="map-zone zone-slicer" onclick="App.startGame('slicer')">
+            <div class="zone-icon">⚔️</div>
+            <div class="zone-name">Letter<br>Battle</div>
+            <div class="zone-badge" id="badge-slicer"></div>
+          </div>
+          <div class="map-zone zone-number" onclick="App.startGame('number')">
+            <div class="zone-icon">💰</div>
+            <div class="zone-name">Treasure<br>Count</div>
+            <div class="zone-badge" id="badge-number"></div>
+          </div>
+          <div class="map-zone zone-trace" onclick="App.startGame('trace')">
+            <div class="zone-icon">📜</div>
+            <div class="zone-name">Scroll<br>Writer</div>
+            <div class="zone-badge" id="badge-trace"></div>
+          </div>
+          <div class="map-zone zone-chase" onclick="App.startGame('chase')">
+            <div class="zone-icon">🏃</div>
+            <div class="zone-name">Chase the<br>Thief!</div>
+            <div class="zone-badge" id="badge-chase"></div>
+          </div>
+          <div class="map-zone zone-color" onclick="App.startGame('color')">
+            <div class="zone-icon">🎨</div>
+            <div class="zone-name">Coloring<br>Book</div>
+            <div class="zone-badge" id="badge-color"></div>
+          </div>
+          <div class="map-zone zone-puzzle" onclick="App.startGame('puzzle')">
+            <div class="zone-icon">🧩</div>
+            <div class="zone-name">Bible<br>Puzzle</div>
+            <div class="zone-badge" id="badge-puzzle"></div>
+          </div>
+          <div class="map-zone zone-adventure" onclick="App.showScreen('story-select')">
+            <div class="zone-icon">📖</div>
+            <div class="zone-name">Bible<br>Stories</div>
+            <div class="zone-badge" id="badge-adventure"></div>
+          </div>
+          <div class="map-zone zone-dots" onclick="App.startGame('dots')">
+            <div class="zone-icon">✏️</div>
+            <div class="zone-name">Connect<br>the Dots</div>
+            <div class="zone-badge" id="badge-dots"></div>
+          </div>
+          <div class="map-zone zone-match" onclick="App.startGame('match')">
+            <div class="zone-icon">🃏</div>
+            <div class="zone-name">Memory<br>Match</div>
+            <div class="zone-badge" id="badge-match"></div>
+          </div>
+          <div class="map-zone zone-shadow" onclick="App.startGame('shadow')">
+            <div class="zone-icon">🌑</div>
+            <div class="zone-name">Shadow<br>Match</div>
+            <div class="zone-badge" id="badge-shadow"></div>
+          </div>
+          <div class="map-zone zone-spotdiff" onclick="App.startGame('spotdiff')">
+            <div class="zone-icon">🔍</div>
+            <div class="zone-name">Spot the<br>Difference</div>
+            <div class="zone-badge" id="badge-spotdiff"></div>
+          </div>
+          <div class="map-zone zone-gemsort" onclick="App.startGame('gemsort')">
+            <div class="zone-icon">💎</div>
+            <div class="zone-name">Gem<br>Sort</div>
+            <div class="zone-badge" id="badge-gemsort"></div>
+          </div>
+          <div class="map-zone zone-hidden" onclick="App.startGame('hidden')">
+            <div class="zone-icon">🏹</div>
+            <div class="zone-name">Hidden<br>Objects</div>
+            <div class="zone-badge" id="badge-hidden"></div>
+          </div>
+          <div class="map-zone zone-sequence" onclick="App.startGame('sequence')">
+            <div class="zone-icon">📖</div>
+            <div class="zone-name">Story<br>Order</div>
+            <div class="zone-badge" id="badge-sequence"></div>
+          </div>
+          <div class="map-zone zone-critter" onclick="App.startGame('critter')" style="grid-column: 1 / -1;">
+            <div class="zone-icon">🗺️</div>
+            <div class="zone-name">Critter Quest<br><small style="font-size:0.7em;opacity:0.85;">Top-Down Adventure</small></div>
+            <div class="zone-badge" id="badge-critter"></div>
+          </div>
+          <div class="map-zone zone-buttonblast" onclick="App.startGame('buttonblast')" style="grid-column: 1 / -1;">
+            <div class="zone-icon">🎮</div>
+            <div class="zone-name">Button Blast!<br><small style="font-size:0.7em;opacity:0.85;">Pop the Button Enemies</small></div>
+            <div class="zone-badge" id="badge-buttonblast"></div>
+          </div>
+          <div class="map-zone zone-balloonpop" onclick="App.startGame('balloonpop')">
+            <div class="zone-icon">🎈</div>
+            <div class="zone-name">Balloon<br>Pop!</div>
+            <div class="zone-badge" id="badge-balloonpop"></div>
+          </div>
+          <div class="map-zone zone-shapesort" onclick="App.startGame('shapesort')">
+            <div class="zone-icon">🔷</div>
+            <div class="zone-name">Shape<br>Sort</div>
+            <div class="zone-badge" id="badge-shapesort"></div>
+          </div>
+          <div class="map-zone zone-animaltap" onclick="App.startGame('animaltap')">
+            <div class="zone-icon">🐾</div>
+            <div class="zone-name">Animal<br>Tap</div>
+            <div class="zone-badge" id="badge-animaltap"></div>
+          </div>
+          <div class="map-zone zone-fingerpaint" onclick="App.startGame('fingerpaint')">
+            <div class="zone-icon">🎨</div>
+            <div class="zone-name">Finger<br>Paint</div>
+            <div class="zone-badge" id="badge-fingerpaint"></div>
+          </div>
+          <div class="map-zone zone-fishfeed" onclick="App.startGame('fishfeed')">
+            <div class="zone-icon">🐟</div>
+            <div class="zone-name">Fish<br>Feed</div>
+            <div class="zone-badge" id="badge-fishfeed"></div>
+          </div>
+          <div class="map-zone zone-rocketlaunch" onclick="App.startGame('rocketlaunch')">
+            <div class="zone-icon">🚀</div>
+            <div class="zone-name">Rocket<br>Launch</div>
+            <div class="zone-badge" id="badge-rocketlaunch"></div>
+          </div>
+          <div class="map-zone zone-bubblepop" onclick="App.startGame('bubblepop')">
+            <div class="zone-icon">🫧</div>
+            <div class="zone-name">Bubble<br>Pop</div>
+            <div class="zone-badge" id="badge-bubblepop"></div>
+          </div>
+          <div class="map-zone zone-whackmole" onclick="App.startGame('whackmole')">
+            <div class="zone-icon">🔨</div>
+            <div class="zone-name">Whack-a-<br>Mole</div>
+            <div class="zone-badge" id="badge-whackmole"></div>
+          </div>
+          <div class="map-zone zone-fruitcatcher" onclick="App.startGame('fruitcatcher')">
+            <div class="zone-icon">🍎</div>
+            <div class="zone-name">Fruit<br>Catcher</div>
+            <div class="zone-badge" id="badge-fruitcatcher"></div>
+          </div>
+          <div class="map-zone zone-piano" onclick="App.startGame('piano')">
+            <div class="zone-icon">🎹</div>
+            <div class="zone-name">Mini<br>Piano</div>
+            <div class="zone-badge" id="badge-piano"></div>
+          </div>
+          <div class="map-zone zone-raingarden" onclick="App.startGame('raingarden')">
+            <div class="zone-icon">🌧️</div>
+            <div class="zone-name">Rain<br>Garden</div>
+            <div class="zone-badge" id="badge-raingarden"></div>
+          </div>
+          <div class="map-zone zone-lostsheep" onclick="App.startGame('lostsheep')">
+            <div class="zone-icon">🐑</div>
+            <div class="zone-name">Lost<br>Sheep</div>
+            <div class="zone-badge" id="badge-lostsheep"></div>
+          </div>
+          <div class="map-zone zone-starlight" onclick="App.startGame('starlight')">
+            <div class="zone-icon">⭐</div>
+            <div class="zone-name">Star<br>Light</div>
+            <div class="zone-badge" id="badge-starlight"></div>
+          </div>
+          <div class="map-zone zone-butterflygarden" onclick="App.startGame('butterflygarden')">
+            <div class="zone-icon">🦋</div>
+            <div class="zone-name">Butterfly<br>Garden</div>
+            <div class="zone-badge" id="badge-butterflygarden"></div>
+          </div>
+          <div class="map-zone zone-colordrop" onclick="App.startGame('colordrop')">
+            <div class="zone-icon">🎨</div>
+            <div class="zone-name">Color<br>Drop</div>
+            <div class="zone-badge" id="badge-colordrop"></div>
+          </div>
+        </div>
+        <!-- Home button on map -->
+        <button class="btn-home-map" onclick="App.showScreen('title')">🏠 Home</button>
+      </div>
+    </div>
+
+    <!-- ========== STORY SELECT ========== -->
+    <div id="screen-story-select" class="screen">
+      <div class="parchment-page">
+        <h2 class="screen-title">📖 Bible Stories</h2>
+        <div class="story-list" id="story-list">
+          <!-- Populated by JS -->
+        </div>
+        <button class="btn-back-map" onclick="App.showScreen('map')">🏰 Back to Map</button>
+      </div>
+    </div>
+
+    <!-- ========== CAMPAIGN SCREEN ========== -->
+    <div id="screen-campaign" class="screen">
+      <div class="campaign-bg" id="campaign-bg">
+        <div class="campaign-art" id="campaign-art">🏰</div>
+        <div class="campaign-card">
+          <div class="campaign-chapter" id="campaign-chapter">Chapter 1</div>
+          <div class="campaign-text" id="campaign-text"></div>
+          <button class="btn-campaign-next" id="campaign-next-btn" onclick="Campaign.next()">Continue ➡️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== GAME SCREEN ========== -->
+    <div id="screen-game" class="screen">
+      <canvas id="game-canvas"></canvas>
+      <div class="game-hud">
+        <button class="btn-hud-back" onclick="App.showScreen('map')">🏰</button>
+        <div class="hud-center">
+          <div id="hud-title" class="hud-title"></div>
+          <div id="hud-score" class="hud-score"></div>
+        </div>
+        <div id="hud-hearts" class="hud-hearts">❤️❤️❤️</div>
+      </div>
+      <div id="game-overlay" class="game-overlay hidden">
+        <div class="overlay-content">
+          <div id="overlay-emoji" class="overlay-emoji"></div>
+          <div id="overlay-text" class="overlay-text"></div>
+          <button id="overlay-btn" class="btn-main" onclick="App.overlayAction()"></button>
+          <div class="overlay-extra-btns">
+            <button class="btn-secondary overlay-mini" onclick="App.overlayNextLevel()">⏭️ Next Level</button>
+            <button class="btn-secondary overlay-mini" onclick="App.overlayReplay()">▶️ Play Again</button>
+            <button class="btn-secondary overlay-mini" onclick="App.overlayHome()">🏰 Map</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ADVENTURE SCREEN ========== -->
+    <div id="screen-adventure" class="screen">
+      <div class="story-bg" id="story-bg">
+        <div class="story-art" id="story-art"></div>
+        <div class="story-card">
+          <div class="story-page-text" id="story-text"></div>
+          <div class="story-choices" id="story-choices"></div>
+          <button class="btn-story-next" id="story-next-btn" onclick="AdventureGame.nextPage()">Next ➡️</button>
+        </div>
+        <div class="story-progress" id="story-progress"></div>
+        <button class="btn-back-story" onclick="App.showScreen('story-select')">📖 Stories</button>
+      </div>
+    </div>
+
+    <!-- ========== REWARD SCREEN ========== -->
+    <div id="screen-reward" class="screen">
+      <div class="reward-bg">
+        <div class="reward-confetti" id="reward-confetti"></div>
+        <div class="reward-card">
+          <div class="reward-hero" id="reward-hero">🧙‍♂️</div>
+          <h2 class="reward-title">Amazing!</h2>
+          <div class="reward-stars" id="reward-stars">⭐⭐⭐</div>
+          <div class="reward-msg" id="reward-msg">Great job!</div>
+          <div class="reward-verse" id="reward-verse"></div>
+          <div class="reward-total">Total Stars: ⭐ <span id="reward-total-stars">0</span></div>
+          <div class="reward-btns">
+            <button class="btn-main" onclick="App.showScreen('map')">🏰 World Map</button>
+            <button class="btn-secondary" onclick="App.replayGame()">▶️ Play Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SETTINGS SCREEN ========== -->
+    <div id="screen-settings" class="screen">
+      <div class="parchment-page">
+        <h2 class="screen-title">⚙️ Settings</h2>
+        <div class="settings-list">
+
+          <!-- === AUDIO === -->
+          <div class="setting-section-title">🎵 Audio</div>
+
+          <div class="setting-row">
+            <span class="setting-label">🎵 Background Music</span>
+            <div class="toggle-group">
+              <button class="btn-toggle" id="toggle-music" onclick="Audio.toggleMusic(); App._updateMusicBtn()">🔇 Music Off</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🔊 Volume</span>
+            <input type="range" id="setting-vol" min="0" max="1" step="0.1" value="0.7" oninput="Audio.setVolume(this.value)">
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🗣️ Narrator Voice</span>
+            <select id="setting-browser-voice" onchange="Audio.setBrowserVoice(this.value)" style="max-width:210px; font-size:13px;">
+              <option>Loading voices…</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🎤 Voice Speed</span>
+            <input type="range" id="setting-speed" min="0.5" max="1.5" step="0.1" value="0.9" oninput="Audio.setSpeed(this.value)">
+          </div>
+
+          <!-- Test Voice -->
+          <div class="setting-row">
+            <span class="setting-label"></span>
+            <div class="voice-test-group">
+              <button class="btn-main" style="padding:10px 22px; font-size:15px;" onclick="App._testVoiceSettings()">🔊 Test Voice</button>
+              <span id="voice-test-status" class="status-detail" style="display:none;"></span>
+            </div>
+          </div>
+
+          <!-- Better voice tip -->
+          <div class="voice-tip-box">
+            <strong>💡 Voice sounds robotic?</strong> On Mac, you can get a much more natural voice for free. Go to <strong>System Settings → Accessibility → Spoken Content → System Voice → Manage Voices</strong>, then download an <em>Enhanced</em> voice like <strong>"Ava Enhanced"</strong> or <strong>"Samantha Enhanced"</strong>. Reload the app and pick it in the dropdown above!
+          </div>
+
+          <!-- === CONTROLS === -->
+          <div class="setting-section-title">🎮 Controls</div>
+
+          <div class="setting-row">
+            <span class="setting-label">📷 Motion Control</span>
+            <div class="toggle-group">
+              <button class="btn-toggle" id="toggle-camera" onclick="Motion.toggle()">Enable Camera</button>
+              <span class="status-dot" id="status-camera" title="Camera status">⚫</span>
+            </div>
+          </div>
+          <div class="setting-row" id="camera-status-row" style="display:none;">
+            <span class="status-detail" id="camera-status-text">Checking camera…</span>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🎙️ Voice Commands</span>
+            <div class="toggle-group">
+              <button class="btn-toggle" id="toggle-voice" onclick="App.voiceEnabled ? App.disableVoice() : App.enableVoice()">Enable Voice</button>
+              <span class="status-dot" id="status-voice" title="Voice status">⚫</span>
+            </div>
+          </div>
+          <div class="setting-row" id="voice-status-row" style="display:none;">
+            <span class="status-detail" id="voice-status-text">Voice commands not active</span>
+          </div>
+
+          <!-- === GAME === -->
+          <div class="setting-section-title">📚 Game</div>
+
+          <div class="setting-row">
+            <span class="setting-label">📚 Difficulty</span>
+            <select id="setting-diff" onchange="App.setDifficulty(this.value)">
+              <option value="easy">Easy (Ages 3-4)</option>
+              <option value="medium" selected>Medium (Age 5)</option>
+              <option value="hard">Hard (Ages 5-6)</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🔒 Privacy Info</span>
+            <button class="btn-secondary" onclick="App.showScreen('privacy')" style="padding:8px 16px; font-size:14px;">View Privacy</button>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">🗑️ Reset Progress</span>
+            <button class="btn-danger" onclick="App.resetProgress()">Reset All Stars</button>
+          </div>
+
+        </div>
+        <div class="settings-footer-btns">
+          <button class="btn-back-map" onclick="App.showScreen('title')">🏠 Back to Home</button>
+          <button class="btn-secondary" onclick="App.showScreen('map')" style="padding:12px 24px; font-size:14px;">🗺️ World Map</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PRIVACY SCREEN ========== -->
+    <div id="screen-privacy" class="screen">
+      <div class="parchment-page" style="max-width:680px; text-align:left; gap:14px;">
+        <h2 class="screen-title">🔒 Privacy for Parents</h2>
+        <div class="privacy-section">
+          <h3>📷 Camera (Motion Control)</h3>
+          <p>When enabled, the camera tracks your child's <strong>hand position only</strong> using MediaPipe — Google's on-device AI library. <strong>Video is never recorded, saved, or transmitted anywhere.</strong> Processing happens entirely on this device. The camera shows a small live preview in the corner so you can always see what's visible.</p>
+        </div>
+        <div class="privacy-section">
+          <h3>🎙️ Voice Commands</h3>
+          <p>Voice commands use your browser's built-in speech recognition. <strong>In Google Chrome, audio snippets are sent to Google's speech servers for processing</strong> — this is a Chrome browser feature, not specific to this app. <strong>We recommend using voice commands only if you are comfortable with Chrome's privacy policy.</strong> Voice is off by default and must be manually enabled.</p>
+          <p>In Firefox or Safari, voice recognition runs fully on-device and nothing is sent externally.</p>
+        </div>
+        <div class="privacy-section">
+          <h3>💾 Data Storage</h3>
+          <p>Progress (stars, completed levels, child's name) is saved <strong>only on this device</strong> using browser localStorage. <strong>Nothing is uploaded to any server.</strong> This app has no accounts, no analytics, and no internet connection requirement (except for loading fonts and MediaPipe on first use).</p>
+        </div>
+        <div class="privacy-section">
+          <h3>✅ Summary</h3>
+          <ul style="padding-left:20px; line-height:2;">
+            <li>No accounts or registration required</li>
+            <li>No ads, no tracking, no analytics</li>
+            <li>Camera: fully on-device (no cloud)</li>
+            <li>Voice: on-device in Firefox/Safari; Google servers in Chrome</li>
+            <li>All progress data stays on your device only</li>
+          </ul>
+        </div>
+        <button class="btn-back-map" onclick="App.showScreen('settings')">← Back to Settings</button>
+      </div>
+    </div>
+
+  </div><!-- end #app -->
+
+  <!-- Camera for motion detection (hidden) -->
+  <video id="camera-feed" playsinline muted></video>
+  <canvas id="motion-canvas"></canvas>
+  <!-- Hand cursor overlay -->
+  <div id="hand-cursor" class="hand-cursor">👆</div>
+
+  <!-- MediaPipe: hand tracking for camera/motion control -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+  <!-- Load scripts in order -->
+  <script src="js/data/curriculum.js"></script>
+  <script src="js/data/stories.js"></script>
+  <script src="js/data/mazes.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/games/maze.js"></script>
+  <script src="js/games/slicer.js"></script>
+  <script src="js/games/numberMatch.js"></script>
+  <script src="js/games/letterTrace.js"></script>
+  <script src="js/games/adventure.js"></script>
+  <script src="js/games/pathChase.js"></script>
+  <script src="js/games/coloring.js"></script>
+  <script src="js/games/puzzle.js"></script>
+  <script src="js/games/connectDots.js"></script>
+  <script src="js/games/memoryMatch.js"></script>
+  <script src="js/games/shadowMatch.js"></script>
+  <script src="js/games/spotDiff.js"></script>
+  <script src="js/games/gemSort.js"></script>
+  <script src="js/games/hiddenObject.js"></script>
+  <script src="js/games/sequenceGame.js"></script>
+  <script src="js/data/critterWorld.js"></script>
+  <script src="js/games/critterQuest.js"></script>
+  <script src="js/games/buttonBlast.js"></script>
+  <script src="js/games/balloonPop.js"></script>
+  <script src="js/games/shapeSort.js"></script>
+  <script src="js/games/animalTap.js"></script>
+  <script src="js/games/fingerPaint.js"></script>
+  <script src="js/games/fishFeed.js"></script>
+  <script src="js/games/rocketLaunch.js"></script>
+  <script src="js/games/bubblePop.js"></script>
+  <script src="js/games/whackMole.js"></script>
+  <script src="js/games/fruitCatcher.js"></script>
+  <script src="js/games/piano.js"></script>
+  <script src="js/games/rainGarden.js"></script>
+  <script src="js/games/lostSheep.js"></script>
+  <script src="js/games/starLight.js"></script>
+  <script src="js/games/butterflyGarden.js"></script>
+  <script src="js/games/colorDrop.js"></script>
+  <script src="js/gamepad.js"></script>
+  <script src="js/campaign.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
