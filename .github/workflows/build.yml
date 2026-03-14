@@ -22,14 +22,14 @@ jobs:
       - name: Generate icon
         run: npm run generate-icon
 
-      - name: Build Mac (.dmg)
-        run: npx electron-builder --mac --publish never
+      - name: Build Mac (.zip)
+        run: npx electron-builder --mac zip --publish never
 
       - name: Upload Mac build
         uses: actions/upload-artifact@v4
         with:
           name: mac-build
-          path: dist/*.dmg
+          path: dist/*.zip
 
   build-win:
     runs-on: windows-latest
@@ -57,22 +57,23 @@ jobs:
           path: dist/*.exe
 
   release:
-    needs: [build-mac, build-win]
+    needs: [build-win]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download Mac build
-        uses: actions/download-artifact@v4
-        with:
-          name: mac-build
-          path: dist/mac
-
       - name: Download Windows build
         uses: actions/download-artifact@v4
         with:
           name: windows-build
           path: dist/win
+
+      - name: Download Mac build (if available)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: mac-build
+          path: dist/mac
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -82,12 +83,12 @@ jobs:
             ## Kingdom Quest ${{ github.ref_name }}
 
             ### Download:
-            - **Mac**: Download the `.dmg` file
-            - **Windows**: Download the `.exe` file
+            - **Windows**: Download the `.exe` file and run it to install
+            - **Mac**: Download the `.zip` file, unzip, and drag to Applications
 
-            Install and open — it will auto-update whenever a new version is pushed!
+            The app works offline and auto-updates when connected to WiFi!
           files: |
-            dist/mac/*.dmg
             dist/win/*.exe
+            dist/mac/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
