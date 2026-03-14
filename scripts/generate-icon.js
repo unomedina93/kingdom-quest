@@ -84,13 +84,33 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width
 async function main() {
   const svgBuffer = Buffer.from(svg)
 
-  await sharp(svgBuffer)
-    .resize(512, 512)
-    .png()
-    .toFile(path.join(buildDir, 'icon.png'))
+  // Generate 512x512 PNG (used by Mac for .icns auto-conversion)
+  const pngPath = path.join(buildDir, 'icon.png')
+  await sharp(svgBuffer).resize(512, 512).png().toFile(pngPath)
+  console.log('✅ Generated: build/icon.png')
 
-  console.log('Icon generated: build/icon.png')
-  console.log('   electron-builder will auto-convert to .icns (Mac) and .ico (Windows) during build')
+  // Generate .ico manually using PNG-in-ICO format (Windows Vista+)
+  // No extra packages needed — just sharp + manual ICO binary header
+  const png256 = await sharp(svgBuffer).resize(256, 256).png().toBuffer()
+
+  // ICO file = 6-byte header + 16-byte directory entry + raw PNG bytes
+  const header = Buffer.alloc(6)
+  header.writeUInt16LE(0, 0)  // reserved
+  header.writeUInt16LE(1, 2)  // type: 1 = ICO
+  header.writeUInt16LE(1, 4)  // count: 1 image
+
+  const dir = Buffer.alloc(16)
+  dir.writeUInt8(0, 0)          // width (0 = 256)
+  dir.writeUInt8(0, 1)          // height (0 = 256)
+  dir.writeUInt8(0, 2)          // color count
+  dir.writeUInt8(0, 3)          // reserved
+  dir.writeUInt16LE(1, 4)       // color planes
+  dir.writeUInt16LE(32, 6)      // bits per pixel
+  dir.writeUInt32LE(png256.length, 8)  // size of image data
+  dir.writeUInt32LE(22, 12)     // offset (6 header + 16 dir entry)
+
+  fs.writeFileSync(path.join(buildDir, 'icon.ico'), Buffer.concat([header, dir, png256]))
+  console.log('✅ Generated: build/icon.ico')
 }
 
 main().catch(err => {
